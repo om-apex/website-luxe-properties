@@ -1,0 +1,10 @@
+{
+  "name": "om-luxe-site",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Om Luxe Properties - Perch in the Clouds vacation rental website",
+  "scripts": {
+    "dev": "npx serve -p 3004",
+    "start": "npx serve -p 3004"
+  }
+}

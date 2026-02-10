@@ -20,11 +20,11 @@
             <a href="index.html" class="logo-container">
                 <img src="assets/images/logo.png" alt="Om Luxe Properties Logo" class="logo">
                 <div class="company-name">
-                    Om Luxe Properties
-                    <span>Luxury Vacation Rentals</span>
+                    <span data-cms-key="luxe_global_company_name">Om Luxe Properties</span>
+                    <span data-cms-key="luxe_global_tagline">Luxury Vacation Rentals</span>
                 </div>
             </a>
-            
+
             <!-- Navigation -->
             <nav class="main-nav">
                 <ul class="nav-menu">
@@ -36,14 +36,14 @@
                     <li><a href="rules.html">House Rules</a></li>
                     <li><a href="howto.html">How-To Videos</a></li>
                 </ul>
-                
+
                 <!-- Call Button -->
-                <button class="btn-call" id="callBtn">
+                <a href="tel:" class="btn-call" id="callBtn" data-cms-key="luxe_global_phone" data-cms-type="phone">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
                     </svg>
                     Call Us
-                </button>
+                </a>
             </nav>
             
             <!-- Mobile Menu Toggle -->
@@ -58,8 +58,8 @@
     <!-- ==================== Page Header ==================== -->
     <section class="page-header">
         <div class="container">
-            <h1>Things to Do</h1>
-            <p>Explore the best activities and experiences Ellijay, Georgia has to offer.</p>
+            <h1 data-cms-key="luxe_todo_title">Things to Do</h1>
+            <p data-cms-key="luxe_todo_description">Explore the best activities and experiences Ellijay, Georgia has to offer.</p>
         </div>
     </section>
 
@@ -70,8 +70,8 @@
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                     <path d="m8 3 4 8 5-5 5 15H2L8 3z"></path>
                 </svg>
-                <h3>Things to Do Content Coming Soon</h3>
-                <p>This section will feature exciting activities in the Ellijay area including hiking trails, apple orchards, tubing adventures, local wineries, and much more.</p>
+                <h3 data-cms-key="luxe_todo_coming_soon_title">Things to Do Content Coming Soon</h3>
+                <p data-cms-key="luxe_todo_coming_soon_description">This section will feature exciting activities in the Ellijay area including hiking trails, apple orchards, tubing adventures, local wineries, and much more.</p>
             </div>
         </div>
     </section>
@@ -81,7 +81,7 @@
         <div class="footer-content">
             <div class="footer-brand">
                 <img src="assets/images/logo.png" alt="Om Luxe Properties" class="logo">
-                <span>Om Luxe Properties</span>
+                <span data-cms-key="luxe_global_company_name">Om Luxe Properties</span>
             </div>
             
             <div class="footer-links">
@@ -125,5 +125,6 @@
 
     <!-- JavaScript -->
     <script src="js/script.js"></script>
+    <script src="js/cms.js"></script>
 </body>
 </html>

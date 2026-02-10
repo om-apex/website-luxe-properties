@@ -171,7 +171,18 @@ p {
     letter-spacing: 0.02em;
 }
 
-.company-name span {
+.company-name span:first-child {
+    display: block;
+    font-family: var(--font-heading);
+    font-size: inherit;
+    font-weight: inherit;
+    letter-spacing: inherit;
+    text-transform: none;
+    color: inherit;
+    margin-top: 0;
+}
+
+.company-name span:last-child {
     display: block;
     font-size: 0.7rem;
     font-family: var(--font-body);
@@ -250,6 +261,12 @@ p {
 .btn-call svg {
     width: 18px;
     height: 18px;
+}
+
+a.btn-call {
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
 }
 
 /* Mobile Menu Toggle */
@@ -847,10 +864,10 @@ p {
         font-size: 1.1rem;
     }
     
-    .company-name span {
+    .company-name span:last-child {
         display: none;
     }
-    
+
     .main-nav {
         position: fixed;
         top: 80px;
