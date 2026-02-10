@@ -10,6 +10,18 @@
   const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh5bXBnb2N1aXZ6eHp4bGxnbWN5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk2OTkxMjEsImV4cCI6MjA4NTI3NTEyMX0.gPMUFzMx_rVxLOjtYWuehYhOIhn6byx81gElCXkz1NM';
   const SITE = 'luxe';
 
+  // Format phone: +16787988254 → +1 (678) 798-8254
+  function formatPhone(raw) {
+    var digits = raw.replace(/[^\d]/g, '');
+    if (digits.length === 11 && digits.charAt(0) === '1') {
+      return '+1 (' + digits.slice(1, 4) + ') ' + digits.slice(4, 7) + '-' + digits.slice(7);
+    }
+    if (digits.length === 10) {
+      return '(' + digits.slice(0, 3) + ') ' + digits.slice(3, 6) + '-' + digits.slice(6);
+    }
+    return raw;
+  }
+
   // Check if edit mode via URL param
   const urlParams = new URLSearchParams(window.location.search);
   const editMode = urlParams.get('editMode') === 'true';
@@ -48,7 +60,7 @@
         // Handle phone links
         if (el.tagName === 'A' && el.getAttribute('data-cms-type') === 'phone') {
           el.href = 'tel:' + content[key].replace(/[^\d+]/g, '');
-          el.textContent = content[key];
+          el.textContent = formatPhone(content[key]);
         } else {
           el.textContent = content[key];
         }
@@ -155,8 +167,10 @@
         // Handle phone links
         if (el.tagName === 'A' && el.getAttribute('data-cms-type') === 'phone') {
           el.href = 'tel:' + newValue.replace(/[^\d+]/g, '');
+          el.textContent = formatPhone(newValue);
+        } else {
+          el.textContent = newValue;
         }
-        el.textContent = newValue;
         document.body.removeChild(overlay);
       } else {
         saveBtn.textContent = 'Failed — Try Again';
