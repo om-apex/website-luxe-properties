@@ -26,6 +26,36 @@
   const urlParams = new URLSearchParams(window.location.search);
   const editMode = urlParams.get('editMode') === 'true';
 
+  // Fetch company config (phone, name) from company_configs table
+  async function fetchCompanyConfig() {
+    try {
+      var res = await fetch(
+        SUPABASE_URL + '/rest/v1/company_configs?id=eq.om-luxe-properties&select=config',
+        {
+          headers: {
+            'apikey': SUPABASE_ANON_KEY,
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+      if (!res.ok) return {};
+      var data = await res.json();
+      if (!data.length || !data[0].config) return {};
+      var cfg = data[0].config;
+      var result = {};
+      if (cfg.contact && cfg.contact.phone) {
+        result['luxe_global_phone'] = cfg.contact.phone;
+      }
+      if (cfg.company && cfg.company.short_name) {
+        result['luxe_global_company_name'] = cfg.company.short_name;
+      }
+      return result;
+    } catch (e) {
+      console.error('CMS: Failed to fetch company config', e);
+      return {};
+    }
+  }
+
   // Fetch all content for this site
   async function fetchContent() {
     try {
@@ -182,6 +212,9 @@
   // Initialize
   document.addEventListener('DOMContentLoaded', async function() {
     var content = await fetchContent();
+    var companyConfig = await fetchCompanyConfig();
+    // Company config values override CMS values
+    Object.assign(content, companyConfig);
     if (Object.keys(content).length > 0) {
       applyContent(content);
     }
