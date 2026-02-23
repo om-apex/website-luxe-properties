@@ -2,136 +2,173 @@
 
 ## Overview
 
-Marketing website for Om Luxe Properties LLC, showcasing the "Perch in the Clouds" luxury vacation rental in Ellijay, Georgia. This is a **static HTML/CSS/JS** site (no framework).
+Marketing website for Om Luxe Properties LLC, showcasing the "Perch in the Clouds" luxury vacation rental in Ellijay, Georgia. Built with Next.js 16 + Tailwind v4 + shadcn/ui, matching the architecture of the other Om Apex websites (ai-solutions, supply-chain, apex).
 
 ## Tech Stack
 
 | Layer | Technology |
 |-------|-----------|
-| Structure | Static HTML (7 pages) |
-| Styling | Custom CSS (style.css, 1477 lines) |
-| Interactivity | Vanilla JavaScript (script.js + cms.js) |
-| CMS | Client-side Supabase REST API (shared Owner Portal project) |
-| Media | 84 property photos + 5 how-to YouTube videos + drone tour video |
-| Deployment | Static hosting / Vercel |
+| Framework | Next.js 16.1.6 (App Router, RSC) |
+| UI | React 19.2.3 + Tailwind CSS v4 + shadcn/ui |
+| CMS | Supabase (site_content table, site='luxe') |
+| Blog | Supabase (blog_posts table, company_brand='om_luxe_properties') |
+| Contact | Supabase (leads table) + HubSpot CRM sync |
+| Lightbox | Radix Dialog |
+| Media | 84 property photos (next/image) + 5 YouTube embeds + hero drone video |
+| Deployment | Vercel (omluxeproperties.com) |
+| Dev Port | 3004 |
 
 ## Brand
 
 | Element | Value |
 |---------|-------|
-| Primary Color | White #FFFFFF |
-| Accent Green | #2E7D32 |
-| Accent Gold | #C9A227 |
+| Primary Color (Green) | #2E7D32 / oklch(0.467 0.13 148.7) |
+| Accent Color (Gold) | #C9A227 / oklch(0.725 0.145 85.4) |
 | Text Color | #2D2D2D |
 | Heading Font | Georgia, serif |
 | Body Font | Segoe UI, system-ui |
-| Email | stay@omluxeproperties.com |
-| Location | Blue Ridge / Ellijay, Georgia |
+| Email | hello@omluxeproperties.com |
+| Location | Ellijay, Georgia |
 
-## File Structure
+## Directory Structure
 
 ```
 luxe-properties/
-├── index.html              # Home (hero video, booking, photo gallery, highlights)
-├── amenities.html          # Amenities (coming soon)
-├── attractions.html        # Local attractions (coming soon)
-├── restaurants.html        # Restaurant guide (coming soon)
-├── todo.html               # Things to do (coming soon)
-├── rules.html              # House rules (coming soon)
-├── howto.html              # How-to videos (5 YouTube embeds)
-├── css/
-│   └── style.css           # All styles (1477 lines)
-├── js/
-│   ├── script.js           # Core JS (menu, gallery, lightbox, modals)
-│   └── cms.js              # CMS client (fetch content, edit mode)
-├── assets/
-│   └── images/
-│       ├── logo.png/svg
-│       └── photos/         # 84 photos in 7 categories
-│           ├── amenities/
-│           ├── bedrooms/
-│           ├── deck-outdoor/
-│           ├── entertainment/
-│           ├── exterior/
-│           ├── living-kitchen/
-│           └── videos/     # Hero drone tour + how-to source videos
-└── DESIGN.md
+├── public/
+│   ├── images/
+│   │   ├── logo.png, logo.svg, logo-180.png, logo-web.png
+│   │   └── photos/                # 84 photos in 6 categories
+│   │       ├── amenities/         (8 photos)
+│   │       ├── bedrooms/          (9 photos)
+│   │       ├── deck-outdoor/      (21 photos)
+│   │       ├── entertainment/     (7 photos)
+│   │       ├── exterior/          (25 photos)
+│   │       └── living-kitchen/    (14 photos)
+│   └── videos/hero/
+│       └── aerial-drone-tour.mp4  (71 MB)
+├── src/
+│   ├── app/
+│   │   ├── layout.tsx             # Root layout (Header + Footer + EditMode)
+│   │   ├── globals.css            # Tailwind v4 + Luxe brand vars
+│   │   ├── page.tsx               # Home (server component)
+│   │   ├── amenities/page.tsx     # Coming soon
+│   │   ├── things-to-do/page.tsx  # Coming soon
+│   │   ├── attractions/page.tsx   # Coming soon
+│   │   ├── restaurants/page.tsx   # Coming soon
+│   │   ├── house-rules/page.tsx   # Coming soon
+│   │   ├── how-to-videos/page.tsx # 5 YouTube embeds
+│   │   ├── blog/page.tsx          # Blog listing (ISR, 60s)
+│   │   ├── blog/[slug]/page.tsx   # Blog post (SSG + ISR)
+│   │   └── api/contact/route.ts   # Contact form API
+│   ├── components/
+│   │   ├── brand/Logo.tsx
+│   │   ├── content/EditableText.tsx  # EditableText + EditableList
+│   │   ├── layout/Header.tsx       # 8-link nav + Contact button
+│   │   ├── layout/Footer.tsx       # 3-column footer
+│   │   ├── pages/
+│   │   │   ├── HomePageClient.tsx
+│   │   │   ├── ComingSoonPageClient.tsx
+│   │   │   ├── HowToVideosPageClient.tsx
+│   │   │   ├── BlogListClient.tsx
+│   │   │   └── BlogPostClient.tsx
+│   │   ├── property/
+│   │   │   ├── HeroVideo.tsx       # Drone video with overlay
+│   │   │   ├── PropertyStats.tsx   # 4 stat cards
+│   │   │   ├── BookingCTA.tsx      # Airbnb link
+│   │   │   ├── PhotoGallery.tsx    # 84 photos + filter tabs
+│   │   │   ├── Lightbox.tsx        # Full-screen viewer
+│   │   │   └── Highlights.tsx      # 4 feature cards
+│   │   ├── ui/                     # shadcn/ui components
+│   │   ├── ContactModal.tsx
+│   │   └── ContactForm.tsx
+│   ├── contexts/
+│   │   ├── EditModeContext.tsx      # @omapex.com auth + edit mode
+│   │   └── ContentContext.tsx       # CMS state management
+│   └── lib/
+│       ├── brand.ts                # Luxe brand config
+│       ├── content.ts              # ~55 DEFAULT_CONTENT keys
+│       ├── content-fetcher.ts      # Server-side Supabase fetch
+│       ├── blog-fetcher.ts         # Blog post queries
+│       ├── gallery-data.ts         # 84 photo entries
+│       ├── hubspot.ts              # HubSpot CRM integration
+│       ├── supabase.ts             # Supabase client
+│       ├── types.ts                # TypeScript types
+│       └── utils.ts                # cn() utility
+├── next.config.ts                  # Redirects from old .html URLs
+├── package.json
+├── tsconfig.json
+├── postcss.config.mjs
+├── components.json
+└── eslint.config.mjs
 ```
-
-## CMS Integration (Client-Side)
-
-Unlike the Next.js sites, this static site uses a lightweight client-side CMS approach:
-
-### How It Works
-1. `cms.js` loads on every page via `<script>` tag
-2. On DOMContentLoaded, fetches all `site='luxe'` content from Supabase REST API
-3. Finds elements with `data-cms-key` attributes and replaces their text
-4. In edit mode (`?editMode=true`), adds visual indicators and click-to-edit modals
-
-### Content Key Convention
-All keys use `luxe_` prefix: `luxe_{page}_{section}_{descriptor}`
-
-### Key Attributes
-- `data-cms-key="luxe_home_hero_title"` — identifies the CMS content key
-- `data-cms-type="phone"` — special handling for phone links (updates href + text)
-
-### Edit Mode
-- Activated by `?editMode=true` URL parameter
-- Shows gold edit mode bar at top of page
-- Dashed outlines on all CMS-managed elements
-- Click to open modal editor
-- Saves directly to Supabase REST API (PATCH)
-
-## JavaScript Modules
-
-### script.js (Core)
-- `initMobileMenu()` — hamburger menu toggle
-- `initContactModal()` — contact us modal
-- `initHeaderScroll()` — header shadow on scroll
-- `initGalleryFilter()` — photo gallery category tabs
-- `initLightbox()` — full-screen photo viewer with keyboard/touch nav
-
-### cms.js (CMS Client)
-- `fetchContent()` — GET from Supabase REST API
-- `applyContent()` — update DOM from content map
-- `updateContent()` — PATCH to Supabase REST API
-- `enableEditMode()` — add visual indicators + click handlers
-- `openEditor()` — modal editor UI
 
 ## Pages
 
-### index.html (Home)
-- Hero: drone tour video background, property name, location, bedroom/bathroom/sleeps stats
-- Property Stats Bar: 4 stat cards (views, river, sunrise, hot tub)
-- Booking: CTA to book on Airbnb (external link)
-- Photo Gallery: 84 photos with category filter tabs + lightbox
-- Highlights: 4 cards (mountain views, sunrises, hot tub, river views)
+### Home (/)
+- **Hero:** Drone tour video background, property name, location, bed/bath/sleeps stats
+- **Property Stats:** 4 stat cards (360° views, river, sunrise/sunset, hot tub)
+- **Booking CTA:** Book on Airbnb (external link)
+- **Photo Gallery:** 84 photos with 7 category filter tabs + click-to-lightbox
+- **Highlights:** 4 feature cards (mountain views, sunrises, hot tub, river views)
 
-### Content Pages (amenities, attractions, restaurants, todo, rules)
-- All have "Coming Soon" placeholder content
-- Same header/footer as home page
+### Coming Soon Pages (/amenities, /things-to-do, /attractions, /restaurants, /house-rules)
+- Branded header with page title
+- Coming soon message with description
+- All CMS-editable
 
-### howto.html
-- 5 how-to video cards with YouTube embeds
-- Topics: TV & Fireplace, Theater Remote, Murphy Bed, Google Home, Basement Shower
+### How-To Videos (/how-to-videos)
+- 5 YouTube embedded videos: TV & Fireplace, Theater Remote, Murphy Bed, Google Home, Basement Shower
 
-## Shared Elements (All Pages)
+### Blog (/blog, /blog/[slug])
+- Blog listing with card grid, cover images, tags, excerpts
+- Individual post pages with SEO metadata
+- ISR with 60-second revalidation
+- Filters by company_brand='om_luxe_properties'
 
-### Header
-- Fixed position with backdrop blur
-- Logo + "Om Luxe Properties" + "Luxury Vacation Rentals"
-- Navigation: 7 page links
-- "Call Us" button → `<a>` tag with CMS phone number
+## CMS Integration
 
-### Footer
-- Logo + brand name
-- Facebook social link
-- "Contact Us" button (opens modal)
-- Copyright + legal links
+### Content Keys
+All keys use `luxe_` prefix: `luxe_{page}_{section}_{descriptor}`
+
+Content stored in `site_content` table (site='luxe'). Default values defined in `src/lib/content.ts`.
+
+### Edit Mode
+- Activated by `?editMode=true` URL parameter
+- Requires @omapex.com Supabase auth
+- Gold dashed outlines on editable fields
+- Click-to-edit modal saves to Supabase
+
+### Blog Posts
+Stored in `blog_posts` table. Filtered by `company_brand='om_luxe_properties'` and `status='published'`.
+
+## URL Redirects
+
+Old static HTML URLs redirect permanently (301):
+- `/index.html` → `/`
+- `/amenities.html` → `/amenities`
+- `/todo.html` → `/things-to-do`
+- `/attractions.html` → `/attractions`
+- `/restaurants.html` → `/restaurants`
+- `/rules.html` → `/house-rules`
+- `/howto.html` → `/how-to-videos`
 
 ## Deployment
 
-- **Platform**: Static hosting (can deploy to Vercel as static)
-- **Domain**: omluxeproperties.com
-- **No build step**: Just serve the files
-- **CMS requires**: Supabase project accessible (REST API)
+- **Platform:** Vercel
+- **Domain:** omluxeproperties.com
+- **Build:** `npm run build` (Next.js static + SSG + ISR)
+- **Environment Variables (Vercel):**
+  - `NEXT_PUBLIC_SUPABASE_URL`
+  - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+  - `SUPABASE_SERVICE_ROLE_KEY`
+  - `HUBSPOT_API_KEY_OMAPEX`
+
+## Supabase Project
+
+Shared with Owner Portal: `hympgocuivzxzxllgmcy`
+
+Tables used:
+- `site_content` (site='luxe') — CMS content
+- `company_configs` (id='om-luxe-properties') — company contact info
+- `leads` — contact form submissions
+- `blog_posts` (company_brand='om_luxe_properties') — blog content

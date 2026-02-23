@@ -1,0 +1,3 @@
+# Vercel ignores
+.git
+node_modules
