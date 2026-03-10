@@ -1,8 +1,7 @@
 'use client'
 
-import { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react'
-import { createClient } from '@/lib/supabase/client'
-import type { User } from '@supabase/supabase-js'
+import { createContext, useContext, useState, useEffect, useCallback, useRef, ReactNode } from 'react'
+import type { SupabaseClient, User } from '@supabase/supabase-js'
 
 interface EditModeContextType {
   editMode: boolean
@@ -22,49 +21,79 @@ const EditModeContext = createContext<EditModeContextType>({
   showLoginPrompt: false,
 })
 
+function getInitialEditModeRequested(): boolean {
+  if (typeof window === 'undefined') return false
+  try {
+    const search = window.location.search.toLowerCase()
+    return new URLSearchParams(search).get('editmode') === 'true'
+  } catch {
+    return false
+  }
+}
+
+function tryCreateClient(): SupabaseClient | null {
+  try {
+    const { createBrowserClient } = require('@supabase/ssr')
+    return createBrowserClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    )
+  } catch (e) {
+    console.error('[EditMode] Failed to create Supabase client:', e)
+    return null
+  }
+}
+
 export function EditModeProvider({ children }: { children: ReactNode }) {
   const [editMode, setEditMode] = useState(false)
   const [user, setUser] = useState<User | null>(null)
-  const [editModeRequested, setEditModeRequested] = useState(false)
+  const [editModeRequested, setEditModeRequested] = useState(getInitialEditModeRequested)
+  const supabaseRef = useRef<SupabaseClient | null>(null)
 
-  const supabase = createClient()
+  // Lazily create Supabase client (only on client side)
+  if (typeof window !== 'undefined' && !supabaseRef.current) {
+    supabaseRef.current = tryCreateClient()
+  }
+
   const isOmApexUser = user?.email?.endsWith('@omapex.com') || false
   const showLoginPrompt = editModeRequested && !isOmApexUser
 
   // Get initial user and listen for auth changes
   useEffect(() => {
-    const getUser = async () => {
-      const { data: { user } } = await supabase.auth.getUser()
-      setUser(user)
-    }
-    getUser()
+    const supabase = supabaseRef.current
+    if (!supabase) return
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null)
-      if (!session?.user?.email?.endsWith('@omapex.com')) {
-        setEditMode(false)
+    let subscription: { unsubscribe: () => void } | null = null
+
+    try {
+      const getUser = async () => {
+        try {
+          const { data: { user } } = await supabase.auth.getUser()
+          setUser(user)
+        } catch (e) {
+          console.error('[EditMode] getUser failed:', e)
+        }
       }
-    })
+      getUser()
 
-    return () => subscription.unsubscribe()
-  }, [supabase.auth])
-
-  // Check URL for editMode param on mount (case-insensitive)
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const search = window.location.search.toLowerCase()
-      const params = new URLSearchParams(search)
-      if (params.get('editmode') === 'true') {
-        setEditModeRequested(true)
-      }
+      const { data } = supabase.auth.onAuthStateChange((_event, session) => {
+        setUser(session?.user ?? null)
+        if (!session?.user?.email?.endsWith('@omapex.com')) {
+          setEditMode(false)
+        }
+      })
+      subscription = data.subscription
+    } catch (e) {
+      console.error('[EditMode] Auth setup failed:', e)
     }
+
+    return () => { subscription?.unsubscribe() }
   }, [])
 
   // Activate editMode when user is authenticated and editMode was requested
   useEffect(() => {
     if (editModeRequested && isOmApexUser) {
       setEditMode(true)
-      // Ensure URL has ?editMode=true
       if (typeof window !== 'undefined') {
         const url = new URL(window.location.href)
         if (!url.searchParams.has('editMode')) {
@@ -78,7 +107,7 @@ export function EditModeProvider({ children }: { children: ReactNode }) {
   // Keyboard shortcut: Cmd+Shift+E (Mac) / Ctrl+Shift+E (Windows)
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.shiftKey && e.key === 'E') {
+      if ((e.metaKey || e.ctrlKey) && e.shiftKey && (e.key === 'E' || e.key === 'e')) {
         e.preventDefault()
 
         if (editMode) {
@@ -112,6 +141,9 @@ export function EditModeProvider({ children }: { children: ReactNode }) {
 
   // Handle Google OAuth login
   const handleLogin = useCallback(async () => {
+    const supabase = supabaseRef.current
+    if (!supabase) return
+
     const redirectPath = typeof window !== 'undefined'
       ? window.location.pathname + '?editMode=true'
       : '/?editMode=true'
@@ -125,18 +157,18 @@ export function EditModeProvider({ children }: { children: ReactNode }) {
         },
       },
     })
-  }, [supabase.auth])
+  }, [])
 
   return (
     <EditModeContext.Provider value={{ editMode, setEditMode, user, isOmApexUser, editModeRequested, showLoginPrompt }}>
       {showLoginPrompt && (
-        <div className="fixed top-0 left-0 right-0 z-[9999] bg-gray-900/95 text-white px-4 py-3 flex items-center justify-center gap-4 text-sm shadow-lg">
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 9999, backgroundColor: 'rgba(17,24,39,0.95)', color: 'white', padding: '12px 16px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '16px', fontSize: '14px', boxShadow: '0 4px 6px rgba(0,0,0,0.3)' }}>
           <span>Edit mode requires authentication</span>
           <button
             onClick={handleLogin}
-            className="inline-flex items-center gap-2 bg-white text-gray-900 px-4 py-1.5 rounded-md font-medium hover:bg-gray-100 transition-colors"
+            style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', backgroundColor: 'white', color: '#111827', padding: '6px 16px', borderRadius: '6px', fontWeight: 500, border: 'none', cursor: 'pointer' }}
           >
-            <svg className="h-4 w-4" viewBox="0 0 24 24">
+            <svg style={{ height: '16px', width: '16px' }} viewBox="0 0 24 24">
               <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
               <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
               <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
@@ -146,7 +178,7 @@ export function EditModeProvider({ children }: { children: ReactNode }) {
           </button>
           <button
             onClick={() => setEditModeRequested(false)}
-            className="text-gray-400 hover:text-white transition-colors"
+            style={{ color: '#9CA3AF', background: 'none', border: 'none', cursor: 'pointer' }}
           >
             Dismiss
           </button>
