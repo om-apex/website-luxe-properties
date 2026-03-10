@@ -59,6 +59,7 @@ luxe-properties/
 │   │   ├── how-to-videos/page.tsx # 5 YouTube embeds
 │   │   ├── blog/page.tsx          # Blog listing (ISR, 60s)
 │   │   ├── blog/[slug]/page.tsx   # Blog post (SSG + ISR)
+│   │   ├── api/auth/callback/route.ts  # OAuth callback (Google → @omapex.com)
 │   │   └── api/contact/route.ts   # Contact form API
 │   ├── components/
 │   │   ├── brand/Logo.tsx
@@ -82,7 +83,7 @@ luxe-properties/
 │   │   ├── ContactModal.tsx
 │   │   └── ContactForm.tsx
 │   ├── contexts/
-│   │   ├── EditModeContext.tsx      # @omapex.com auth + edit mode
+│   │   ├── EditModeContext.tsx      # @omapex.com auth + edit mode + login prompt + keyboard shortcut
 │   │   └── ContentContext.tsx       # CMS state management
 │   └── lib/
 │       ├── brand.ts                # Luxe brand config
@@ -91,7 +92,10 @@ luxe-properties/
 │       ├── blog-fetcher.ts         # Blog post queries
 │       ├── gallery-data.ts         # 84 photo entries
 │       ├── hubspot.ts              # HubSpot CRM integration
-│       ├── supabase.ts             # Supabase client
+│       ├── supabase.ts             # Supabase client (legacy, used by ContentContext)
+│       ├── supabase/
+│       │   ├── client.ts          # SSR-aware browser client (@supabase/ssr)
+│       │   └── server.ts         # Server client with cookie handling
 │       ├── types.ts                # TypeScript types
 │       └── utils.ts                # cn() utility
 ├── next.config.ts                  # Redirects from old .html URLs
@@ -133,10 +137,13 @@ All keys use `luxe_` prefix: `luxe_{page}_{section}_{descriptor}`
 Content stored in `site_content` table (site='luxe'). Default values defined in `src/lib/content.ts`.
 
 ### Edit Mode
-- Activated by `?editMode=true` URL parameter
-- Requires @omapex.com Supabase auth
-- Gold dashed outlines on editable fields
+- Activated by `?editMode=true` URL parameter or `Cmd+Shift+E` / `Ctrl+Shift+E` keyboard shortcut
+- Requires Google OAuth with @omapex.com Supabase auth (SSR-aware client via `@supabase/ssr`)
+- If not authenticated, a floating "Sign in to edit" banner appears at top of page
+- After OAuth login, user is redirected back to same page with editMode active
+- Gold dashed outlines on editable fields, pencil icon on hover
 - Click-to-edit modal saves to Supabase
+- Middleware refreshes auth sessions on every request (no route protection — site stays public)
 
 ### Blog Posts
 Stored in `blog_posts` table. Filtered by `company_brand='om_luxe_properties'` and `status='published'`.
