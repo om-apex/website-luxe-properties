@@ -16,7 +16,7 @@ function formatPhone(raw: string): string {
 }
 
 export function Footer({ content = {} }: FooterProps) {
-  const email = 'info@omluxeproperties.com'
+  const email = content['luxe_global_contact_email'] || 'info@omluxeproperties.com'
   const phone = content['luxe_global_contact_phone'] || ''
   const location = content['luxe_global_contact_location'] || 'Roswell, GA'
 
