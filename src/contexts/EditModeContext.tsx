@@ -49,11 +49,12 @@ export function EditModeProvider({ children }: { children: ReactNode }) {
     return () => subscription.unsubscribe()
   }, [supabase.auth])
 
-  // Check URL for editMode param on mount
+  // Check URL for editMode param on mount (case-insensitive)
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const params = new URLSearchParams(window.location.search)
-      if (params.get('editMode') === 'true') {
+      const search = window.location.search.toLowerCase()
+      const params = new URLSearchParams(search)
+      if (params.get('editmode') === 'true') {
         setEditModeRequested(true)
       }
     }
