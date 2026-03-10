@@ -25,8 +25,8 @@ Marketing website for Om Luxe Properties LLC, showcasing the "Perch in the Cloud
 | Primary Color (Green) | #2E7D32 / oklch(0.467 0.13 148.7) |
 | Accent Color (Gold) | #C9A227 / oklch(0.725 0.145 85.4) |
 | Text Color | #2D2D2D |
-| Heading Font | Georgia, serif |
-| Body Font | Segoe UI, system-ui |
+| Heading Font | Noto Serif (400/700) via next/font/google |
+| Body Font | Noto Sans (300-600) via next/font/google |
 | Email | hello@omluxeproperties.com |
 | Location | Ellijay, Georgia |
 
@@ -59,13 +59,17 @@ luxe-properties/
 │   │   ├── how-to-videos/page.tsx # 5 YouTube embeds
 │   │   ├── blog/page.tsx          # Blog listing (ISR, 60s)
 │   │   ├── blog/[slug]/page.tsx   # Blog post (SSG + ISR)
+│   │   ├── newsletter/
+│   │   │   ├── page.tsx           # Newsletter signup (server → NewsletterClient)
+│   │   │   └── NewsletterClient.tsx # Email + name capture form
 │   │   ├── api/auth/callback/route.ts  # OAuth callback (Google → @omapex.com)
-│   │   └── api/contact/route.ts   # Contact form API
+│   │   ├── api/contact/route.ts   # Contact form API
+│   │   └── api/newsletter/route.ts # Newsletter signup POST (→ Supabase leads + HubSpot, tag: newsletter_luxe)
 │   ├── components/
 │   │   ├── brand/Logo.tsx
 │   │   ├── content/EditableText.tsx  # EditableText + EditableList
-│   │   ├── layout/Header.tsx       # 8-link nav + Contact button
-│   │   ├── layout/Footer.tsx       # 3-column footer
+│   │   ├── layout/Header.tsx       # 9-link nav + "Book Direct" CTA button (external)
+│   │   ├── layout/Footer.tsx       # Minimal 3-line footer (copyright, contact, subsidiary attribution)
 │   │   ├── pages/
 │   │   │   ├── HomePageClient.tsx
 │   │   │   ├── ComingSoonPageClient.tsx
@@ -75,7 +79,7 @@ luxe-properties/
 │   │   ├── property/
 │   │   │   ├── HeroVideo.tsx       # Drone video with overlay
 │   │   │   ├── PropertyStats.tsx   # 4 stat cards
-│   │   │   ├── BookingCTA.tsx      # Airbnb link
+│   │   │   ├── BookingCTA.tsx      # Dark rounded-3xl card with "Book Direct" button → Guesty booking URL
 │   │   │   ├── PhotoGallery.tsx    # 84 photos + filter tabs
 │   │   │   ├── Lightbox.tsx        # Full-screen viewer
 │   │   │   └── Highlights.tsx      # 4 feature cards
@@ -111,7 +115,7 @@ luxe-properties/
 ### Home (/)
 - **Hero:** Drone tour video background, property name, location, bed/bath/sleeps stats
 - **Property Stats:** 4 stat cards (360° views, river, sunrise/sunset, hot tub)
-- **Booking CTA:** Book on Airbnb (external link)
+- **Booking CTA:** "Ready to Perch in the Clouds?" — dark rounded-3xl card with "Book Direct" button → Guesty booking URL + "(This property is managed by Home Team Vacation Rentals)" attribution
 - **Photo Gallery:** 84 photos with 7 category filter tabs + click-to-lightbox
 - **Highlights:** 4 feature cards (mountain views, sunrises, hot tub, river views)
 
@@ -122,6 +126,11 @@ luxe-properties/
 
 ### How-To Videos (/how-to-videos)
 - 5 YouTube embedded videos: TV & Fireplace, Theater Remote, Murphy Bed, Google Home, Basement Shower
+
+### Newsletter (/newsletter)
+- Email + optional name signup form
+- Submits to /api/newsletter → Supabase leads table + HubSpot CRM (tag: `newsletter_luxe`)
+- Success/error states displayed inline
 
 ### Blog (/blog, /blog/[slug])
 - Blog listing with card grid, cover images, tags, excerpts
