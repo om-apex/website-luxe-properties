@@ -40,9 +40,9 @@ export const DEFAULT_CONTENT: Record<string, ContentEntry> = {
   luxe_home_stats_hottub_label: { value: 'Private Relaxation', page: 'home' },
 
   // === Home Page - Booking ===
-  luxe_home_booking_title: { value: 'Book Your Mountain Escape', page: 'home' },
-  luxe_home_booking_description: { value: 'Experience the magic of Ellijay from our luxurious mountain retreat. Book directly through Airbnb to secure your dates.', page: 'home' },
-  luxe_home_booking_url: { value: 'https://www.airbnb.com/rooms/1493555340407877948?guests=1&adults=1&s=67&unique_share_id=f23d455b-061d-47f9-bcb6-29fe8e1e16bb', page: 'home' },
+  luxe_home_booking_title: { value: 'Ready to Perch in the Clouds?', page: 'home' },
+  luxe_home_booking_description: { value: 'Experience the magic of Nature in Ellijay. May it be the beautiful sunrise, or the amazing twilight spectacle, or the view of the vast river bend, or the dark night\'s star gazing from the open hot tub at night, this property will not disappoint you. Book directly with us here.', page: 'home' },
+  luxe_home_booking_url: { value: 'https://hometeam.guestybookings.com/properties/6892571cb8f8b500119e20ba', page: 'home' },
 
   // === Home Page - Gallery ===
   luxe_home_gallery_title: { value: 'Explore the Property', page: 'home' },
