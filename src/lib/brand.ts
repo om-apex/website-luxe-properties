@@ -51,8 +51,8 @@ export const omLuxeProperties: Brand = {
     accentLight: brandOklch.accentLight,
   },
   fonts: {
-    heading: 'Georgia, serif',
-    body: "'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, Roboto, 'Helvetica Neue', Arial, sans-serif",
+    heading: "'Noto Serif', serif",
+    body: "'Noto Sans', sans-serif",
   },
   company: {
     name: 'Om Luxe Properties LLC',

@@ -1,5 +1,20 @@
 import type { Metadata } from "next"
+import { Noto_Serif, Noto_Sans } from "next/font/google"
 import "./globals.css"
+
+const notoSerif = Noto_Serif({
+  subsets: ["latin"],
+  weight: ["400", "700"],
+  display: "swap",
+  variable: "--font-noto-serif",
+})
+
+const notoSans = Noto_Sans({
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600"],
+  display: "swap",
+  variable: "--font-noto-sans",
+})
 import { Header } from "@/components/layout/Header"
 import { Footer } from "@/components/layout/Footer"
 import { EditModeProvider } from "@/contexts/EditModeContext"
@@ -33,7 +48,7 @@ export default async function RootLayout({
   const footerContent = { ...defaults, ...dbContent, ...companyContact }
 
   return (
-    <html lang="en">
+    <html lang="en" className={`${notoSerif.variable} ${notoSans.variable}`}>
       <body className="antialiased">
         <EditModeProvider>
           <div className="flex min-h-screen flex-col">
