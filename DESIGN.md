@@ -27,6 +27,7 @@ Marketing website for Om Luxe Properties LLC, showcasing the "Perch in the Cloud
 | Text Color | #2D2D2D |
 | Heading Font | Noto Serif (400/700) via next/font/google |
 | Body Font | Noto Sans (300-600) via next/font/google |
+| Logo Name Font | Noto Serif font-bold (700), tracking-tight |
 | Email | hello@omluxeproperties.com |
 | Location | Ellijay, Georgia |
 
