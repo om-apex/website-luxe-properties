@@ -26,9 +26,7 @@ function getInitialEditModeRequested(): boolean {
   try {
     const search = window.location.search.toLowerCase()
     const params = new URLSearchParams(search)
-    // Accept ?editMode (any case) with any truthy value or no value at all
-    // Matches: ?editMode=true, ?editmode=TRUE, ?editMode=1, ?editMode, ?editMode=ture, etc.
-    return params.has('editmode')
+    return params.get('editmode') === 'true'
   } catch {
     return false
   }

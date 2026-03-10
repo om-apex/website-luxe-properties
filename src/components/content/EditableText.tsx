@@ -62,6 +62,10 @@ export function EditableText({
         style={{
           outline: '2px dashed rgba(201, 162, 39, 0.5)',
           outlineOffset: '4px',
+          backgroundColor: 'white',
+          color: '#111827',
+          padding: '2px 6px',
+          borderRadius: '4px',
         }}
         onClick={handleOpenEdit}
       >
@@ -167,7 +171,7 @@ export function EditableList({
     <div className="relative">
       <div
         className="cursor-pointer relative group"
-        style={{ outline: '2px dashed rgba(201, 162, 39, 0.5)', outlineOffset: '4px' }}
+        style={{ outline: '2px dashed rgba(201, 162, 39, 0.5)', outlineOffset: '4px', backgroundColor: 'white', color: '#111827', padding: '4px 8px', borderRadius: '4px' }}
         onClick={handleOpenEdit}
       >
         {content}
