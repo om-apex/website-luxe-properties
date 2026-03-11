@@ -64,6 +64,7 @@ luxe-properties/
 │   │   │   ├── page.tsx           # Newsletter signup (server → NewsletterClient)
 │   │   │   └── NewsletterClient.tsx # Email + name capture form
 │   │   ├── api/auth/callback/route.ts  # OAuth callback (Google → @omapex.com)
+│   │   ├── api/cms/redeploy/route.ts  # CMS publish — triggers Vercel deploy hook
 │   │   ├── api/contact/route.ts   # Contact form API
 │   │   └── api/newsletter/route.ts # Newsletter signup POST (→ Supabase leads + HubSpot, tag: newsletter_luxe)
 │   ├── components/
@@ -153,6 +154,8 @@ Content stored in `site_content` table (site='luxe'). Default values defined in 
 - After OAuth login, user is redirected back to same page with editMode active
 - Gold dashed outlines on editable fields, pencil icon on hover
 - Click-to-edit modal saves to Supabase
+- Floating "Publish Changes" button (bottom-right) triggers Vercel redeploy via `/api/cms/redeploy`
+- Shows loading, success ("Live in ~60s"), and error states
 - Middleware refreshes auth sessions on every request (no route protection — site stays public)
 
 ### Blog Posts
@@ -179,6 +182,7 @@ Old static HTML URLs redirect permanently (301):
   - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
   - `SUPABASE_SERVICE_ROLE_KEY`
   - `HUBSPOT_API_KEY_OMAPEX`
+  - `VERCEL_DEPLOY_HOOK_URL`
 
 ## Supabase Project
 
