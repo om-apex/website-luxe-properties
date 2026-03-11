@@ -10,7 +10,7 @@
     "lint": "eslint"
   },
   "dependencies": {
-    "@om-apex/brand": "github:om-apex/shared-brand#5effee5",
+    "@om-apex/brand": "github:om-apex/shared-brand#5effee5034600dfc475f541f4b578d313b66e1f0",
     "@radix-ui/react-dialog": "^1.1.14",
     "@radix-ui/react-slot": "^1.2.4",
     "@supabase/ssr": "^0.9.0",
