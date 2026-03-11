@@ -160,6 +160,22 @@ export function EditModeProvider({ children }: { children: ReactNode }) {
     })
   }, [])
 
+  // Redeploy state
+  const [deployStatus, setDeployStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
+
+  const handleRedeploy = useCallback(async () => {
+    setDeployStatus('loading')
+    try {
+      const res = await fetch('/api/cms/redeploy', { method: 'POST' })
+      if (!res.ok) throw new Error('Deploy request failed')
+      setDeployStatus('success')
+      setTimeout(() => setDeployStatus('idle'), 5000)
+    } catch {
+      setDeployStatus('error')
+      setTimeout(() => setDeployStatus('idle'), 5000)
+    }
+  }, [])
+
   return (
     <EditModeContext.Provider value={{ editMode, setEditMode, user, isOmApexUser, editModeRequested, showLoginPrompt }}>
       {showLoginPrompt && (
@@ -183,6 +199,41 @@ export function EditModeProvider({ children }: { children: ReactNode }) {
           >
             Dismiss
           </button>
+        </div>
+      )}
+      {editMode && (
+        <div style={{ position: 'fixed', bottom: '24px', right: '24px', zIndex: 9999, display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <button
+            onClick={handleRedeploy}
+            disabled={deployStatus === 'loading'}
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '8px',
+              backgroundColor: deployStatus === 'success' ? '#059669' : deployStatus === 'error' ? '#DC2626' : '#1F2937',
+              color: 'white',
+              padding: '10px 20px',
+              borderRadius: '8px',
+              fontWeight: 600,
+              fontSize: '14px',
+              border: 'none',
+              cursor: deployStatus === 'loading' ? 'wait' : 'pointer',
+              boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
+              opacity: deployStatus === 'loading' ? 0.7 : 1,
+              transition: 'background-color 0.2s, opacity 0.2s',
+            }}
+          >
+            {deployStatus === 'loading' && (
+              <svg style={{ height: '16px', width: '16px', animation: 'spin 1s linear infinite' }} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M12 2v4m0 12v4m-7.07-14.93l2.83 2.83m8.48 8.48l2.83 2.83M2 12h4m12 0h4M4.93 19.07l2.83-2.83m8.48-8.48l2.83-2.83" />
+              </svg>
+            )}
+            {deployStatus === 'idle' && 'Publish Changes'}
+            {deployStatus === 'loading' && 'Deploying...'}
+            {deployStatus === 'success' && 'Deploy triggered! Live in ~60s'}
+            {deployStatus === 'error' && 'Deploy failed — try again'}
+          </button>
+          <style>{`@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }`}</style>
         </div>
       )}
       {children}
