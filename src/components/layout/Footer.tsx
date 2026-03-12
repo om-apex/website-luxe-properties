@@ -22,17 +22,17 @@ export function Footer({ content = {} }: FooterProps) {
 
   return (
     <footer className="border-t bg-gray-50">
-      <div className="container mx-auto px-4 py-8 text-center">
-        <p className="text-sm text-gray-600">
+      <div className="container mx-auto px-4 py-4 text-center">
+        <p className="text-xs text-gray-400">
           &copy; {new Date().getFullYear()} Om Luxe Properties LLC. All rights reserved.
         </p>
-        <p className="mt-2 text-sm text-gray-500">
+        <p className="mt-2 text-xs text-gray-400">
           {location}
-          {' | '}
+          {'\u00A0\u00A0|\u00A0\u00A0'}
           <a href={`mailto:${email}`} className="hover:text-brand-primary transition-colors">{email}</a>
           {phone && (
             <>
-              {' | '}
+              {'\u00A0\u00A0|\u00A0\u00A0'}
               <a href={`tel:${phone}`} className="hover:text-brand-primary transition-colors">{formatPhone(phone)}</a>
             </>
           )}
